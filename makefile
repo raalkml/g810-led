@@ -10,7 +10,7 @@ else
 endif
 SYSTEMDDIR?=/usr/lib/systemd
 
-PREFIX?=$(DESTDIR)/usr
+PREFIX?=/usr/local
 libdir?=$(PREFIX)/lib
 includedir?=$(PREFIX)/include
 
@@ -52,6 +52,18 @@ clean:
 	@rm -rf bin
 	@rm -rf lib
 
+.PHONY: install
+install:
+	install -m 0755 -d \
+		$(DESTDIR)$(PREFIX)/bin \
+		$(DESTDIR)$(PREFIX)/share/$(PROGN)/sample_profiles \
+		$(DESTDIR)$(PREFIX)/share/$(PROGN)/udev
+	install -m 0755 bin/$(PROGN) $(DESTDIR)$(PREFIX)/bin/$(PROGN)
+	for f in sample_profiles/*; do \
+		install -m 0644 "$$f" $(DESTDIR)$(PREFIX)/share/$(PROGN)/"$$f"; \
+	done
+	install -m 0644 udev/$(PROGN).rules $(DESTDIR)$(PREFIX)/share/$(PROGN)/udev/$(PROGN).rules
+
 setup:
 	@install -m 755 -d \
 		$(DESTDIR)/usr/bin \
@@ -82,7 +94,7 @@ install-dev: install-lib
 	@mkdir -p $(includedir)/$(PROGN)/
 	@install -m 644 src/classes/*.h $(includedir)/$(PROGN)
 
-install: setup
+install-careless: setup
 	@test -s /etc/$(PROGN)/profile || \
 		cp /etc/$(PROGN)/samples/group_keys /etc/$(PROGN)/profile
 	@test -s /etc/$(PROGN)/reboot || \
