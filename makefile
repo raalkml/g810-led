@@ -1,5 +1,5 @@
 CXX?=g++
-CXXFLAGS?=-Wall -O2
+CXXFLAGS?=-Wall -O -ggdb
 LIB?=hidapi
 ifeq ($(LIB),libusb)
 	CPPFLAGS=-Dlibusb
